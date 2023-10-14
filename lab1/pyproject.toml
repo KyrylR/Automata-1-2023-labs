@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project]
+name = "my_package"
+version = "0.1.0"
+description = "A brief description of my package."
+authors = [{name="John Doe", email="johndoe@example.com"}]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.6"
+
+[tool.black]
+line-length = 88
+include = '\.pyi?$'
+exclude = '''
+
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | foo.py           # also separately exclude a file named foo.py
+                      # at the root of the project
+)
+'''
+
+[tool.flake8]
+ignore = "E203, E266, E501, W503"
+max-line-length = 88
+max-complexity = 18
+select = "B,C,E,F,W,T4,B9"
+
+[tool.pytest.ini-options]
+minversion = "6.0"
+addopts = "--cov=my_package --cov-report=html"
+testpaths = [
+    "tests",
+]
+
