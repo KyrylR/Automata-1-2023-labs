@@ -22,7 +22,7 @@ class ENFAToNFAConverter:
 
     Method:
     a0' := a0;
-    A' := {a0'}; f' := {}; F' := F and {a0};
+    A' := {a0'}; f' := {}; F' := F intersection {a0};
     f'' := {}; W := {(a0, alpha, a') in f};
         while W != {} do
       choose (a1, alpha, a2) from W;
@@ -56,7 +56,7 @@ class ENFAToNFAConverter:
 
         # Initialize the final states of the NFA.
         # Include the starting state if it's a final state in the ENFA.
-        F_prime = self.enfa.F.union({self.enfa.a0})
+        F_prime = self.enfa.F.intersection({self.enfa.a0})
 
         # Initialize the set of epsilon transitions.
         f_double_prime = set()
