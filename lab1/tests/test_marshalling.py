@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from automata import Automata
+from core import Automata
 
 
 class TestAutomataSerializationMethods(unittest.TestCase):
@@ -21,7 +21,7 @@ class TestAutomataSerializationMethods(unittest.TestCase):
             F={"2"},
             epsilon="epsilon",
         )
-        # Serialized version of the example automata
+        # Serialized version of the examples core
         self.serialized_example = json.dumps(
             {
                 "A": ["0", "1", "2"],

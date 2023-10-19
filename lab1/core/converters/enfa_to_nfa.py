@@ -1,4 +1,4 @@
-from automata import Automata
+from core import Automata
 
 
 class ENFAToNFAConverter:

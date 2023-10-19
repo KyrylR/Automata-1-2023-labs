@@ -1,6 +1,6 @@
 import unittest
 
-from automata import Automata, ENFAToNFAConverter
+from core import Automata, ENFAToNFAConverter
 
 
 class TestEnfaToNfaConversion(unittest.TestCase):

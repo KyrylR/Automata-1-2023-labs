@@ -51,7 +51,7 @@ poetry run pytest
 ### Creating an Automata
 
 ```python
-from automata import Automata
+from core import Automata
 
 automata_instance = Automata(
     A={"0", "1", "2"},
@@ -69,7 +69,7 @@ automata_instance = Automata(
 ### Converting an ENFA to NFA
 
 ```python
-from automata import Automata, ENFAToNFAConverter
+from core import Automata, ENFAToNFAConverter
 
 enfa_instance = Automata(...)
 converter = ENFAToNFAConverter(enfa_instance)

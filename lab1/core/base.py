@@ -2,6 +2,7 @@ import json
 
 from dataclasses import dataclass
 
+from automata.fa.nfa import NFA
 
 @dataclass
 class Automata:
@@ -41,6 +42,31 @@ class Automata:
             f")"
         )
 
+    def visualize(self, filename: str = "automata.png"):
+        """Generate a visual representation of the automaton and save it to a file."""
+        # Convert the transition function to the format expected by visual-automata
+        transitions = {}
+        for (state, symbol), targets in self.f.items():
+            if state not in transitions:
+                transitions[state] = {}
+
+            if symbol == self.epsilon:
+                symbol = ''
+
+            transitions[state][symbol] = targets
+
+        automaton = NFA(
+            states=self.A,
+            input_symbols=self.X,
+            transitions=transitions,
+            initial_state=self.a0,
+            final_states=self.F,
+        )
+
+        # Generate the graph and save it to a file
+        graph = automaton.show_diagram()
+        graph.draw(filename, prog='dot', format='png')
+
     def to_json(self):
         """Serialize the Automata instance to a JSON string."""
         return json.dumps(
@@ -64,20 +90,20 @@ class Automata:
         table = []
 
         # Header row
-        header = ["State"] + sorted(list(self.X))
+        header = ["State"] + sorted([str(x) for x in self.X])
         if self.epsilon:
             header.append(self.epsilon)
         table.append(header)
 
         # Transition rows
-        for state in sorted(self.A):
+        for state in sorted(self.A, key=str):
             row = [state]
-            for symbol in sorted(self.X):
+            for symbol in sorted(self.X, key=str):
                 transition = self.f.get((state, symbol), "-")
-                row.append(", ".join(transition) if transition else "-")
+                row.append(", ".join(map(str, transition)) if transition else "-")
             if self.epsilon:
                 epsilon_transition = self.f.get((state, self.epsilon), "-")
-                row.append(", ".join(epsilon_transition) if epsilon_transition else "-")
+                row.append(", ".join(map(str, epsilon_transition)) if epsilon_transition else "-")
             table.append(row)
 
         # Format table as string

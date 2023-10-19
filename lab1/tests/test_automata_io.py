@@ -1,6 +1,6 @@
 import unittest
 
-from automata import Automata
+from core import Automata
 
 
 class TestAutomataFileOperations(unittest.TestCase):
@@ -24,7 +24,7 @@ class TestAutomataFileOperations(unittest.TestCase):
         self.filename = ".pytest_cache/temp_automata.json"
 
     def test_save_to_file(self):
-        # Save the automata to a file
+        # Save the core to a file
         self.example_automata.save_to_file(self.filename)
 
         # Check if file exists and if it has content
@@ -33,11 +33,11 @@ class TestAutomataFileOperations(unittest.TestCase):
             self.assertTrue(content)  # Assert that the file has content
 
     def test_load_from_file(self):
-        # Save the automata to a file
+        # Save the core to a file
         self.example_automata.save_to_file(self.filename)
 
-        # Load the automata from the file
+        # Load the core from the file
         loaded_automata = Automata.load_from_file(self.filename)
 
-        # Assert that the loaded Automata matches the original example Automata
+        # Assert that the loaded Automata matches the original examples Automata
         self.assertEqual(loaded_automata, self.example_automata)

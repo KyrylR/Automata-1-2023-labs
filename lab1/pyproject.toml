@@ -3,7 +3,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "automata"
+name = "core"
 version = "0.1.0"
 description = "A brief description of my package."
 authors = ["Kyryl R <kyryl.ryabov@gmail.com>"]
@@ -12,9 +12,11 @@ readme = "README.md"
 
 [tool.poetry.scripts]
 black = "black:main"
+example = "examples.example:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"
+automata-lib = {extras = ["visual"], version = "^8.1.0"}
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^6.1.0"
