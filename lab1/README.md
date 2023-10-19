@@ -46,6 +46,33 @@ To run tests using Poetry, simply use:
 poetry run pytest
 ```
 
+Here is how you can insert the new section into your README file:
+
+## Running Examples
+
+To run examples, use the following command:
+
+```bash
+poetry run example
+```
+
+This command will execute the `example` file, which performs the following actions:
+
+1. **List Files in the Data Directory**: The script will list all files in the `data` directory, which should contain e-NFA automata in JSON format.
+
+2. **Load Automata and Visualize**: For each file in the `data` directory, the script will:
+    - Load the e-NFA automata from the file.
+    - Visualize the e-NFA and save the image to the `results` directory with the filename `e-nfa-[filename].png`.
+
+3. **Convert e-NFA to NFA and Visualize**: The script will then:
+    - Convert the e-NFA to NFA using the `ENFAToNFAConverter` class.
+    - Visualize the NFA and save the image to the `results` directory with the filename `nfa-[filename].png`.
+
+4. **Output JSON Representations**: Finally, the script will print out the JSON representations of both the e-NFA and the converted NFA to the console.
+
+This example runner provides a convenient way to see the transformation of e-NFA to NFA and visualize the automata for 
+better understanding. It also helps to ensure that the conversion process is working correctly by comparing the images and JSON outputs.
+
 ## Usage
 
 ### Creating an Automata
