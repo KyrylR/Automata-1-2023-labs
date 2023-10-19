@@ -19,13 +19,13 @@ def process_file(directory: str, filename: str):
 
     print("e-NFA: {}".format(automata.to_json()))
 
-    automata.visualize('results/e-nfa-{}.png'.format(filename))
+    automata.visualize('results/e-nfa-{}.png'.format(os.path.splitext(filename)[0]))
 
     converter = ENFAToNFAConverter(automata)
 
     nfa = converter.convert_to_nfa()
 
-    nfa.visualize("results/nfa-{}.png".format(filename))
+    nfa.visualize("results/nfa-{}.png".format(os.path.splitext(filename)[0]))
     print("NFA: {}".format(nfa.to_json()))
 
     nfa.save_to_file(os.path.join("results", "nfa-{}".format(filename)))
