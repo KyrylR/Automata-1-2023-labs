@@ -34,5 +34,5 @@ def process_file(directory: str, filename: str):
 
 
 def main():
-    for file in list_files("data"):
-        process_file("data", file)
+    # for file in list_files("data"):
+    process_file("data", "automata_4.json")
