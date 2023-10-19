@@ -5,6 +5,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{hyperref}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 
 \begin{document}
@@ -12,60 +13,64 @@
 \begin{titlepage}
     \centering
     \vspace*{1cm}
-    
+
     \Large
     Київський національний університет імені Тараса Шевченка \\
-    
+
     \vspace{0.5cm}
-    
+
     \large
     Факультет комп'ютерних наук та кібернетики \\
-    
+
     \vspace{0.5cm}
-    
+
     Кафедра інтелектуальних інформаційних систем \\
-    
+
     \vspace{0.5cm}
-    
+
     Алгебро-автоматичні методи проектування програмного забезпечення \\
-    
+
     \vspace{3cm}
-    
+
     \textbf{Лабораторна робота 1} \\
-    
+
     \vspace{0.5cm}
-    
+
     "Скінченні автомати" \\
-    
+
     \vspace{2cm}
-    
+
     Виконали студенти 1-го курсу \\
 
     \vspace{0.2cm}
-    
+
     Групи ПЗС-1 \\
 
     \vspace{0.1cm}
-    
+
     Рябов Кирило \\
 
     \vspace{0.1cm}
-    
+
     Соколов Михайло \\
 
     \vspace{0.1cm}
-    
+
     Рибачок Руслан \\
-    
+
     \vfill
-    
+
     2023
-    
+
 \end{titlepage}
 
 \section*{Лабораторна 1: Перетворення е-НДСА в НДСА}
 
 \textbf{Мета:} Перетворити епсилон-недетермінований скінченний автомат (е-НДСА) на недетермінований скінченний автомат (НДСА).
+
+\subsection*{Посилання на репозиторій з кодом:}
+
+\href{https://github.com/KyrylR/Automata-1-2023-labs}{https://github.com/KyrylR/Automata-1-2023-labs}
 
 \subsection*{Псевдокод:}
 
@@ -145,7 +150,7 @@ Epsilon-переходи обробляються двома способами:
 Алгоритм для перетворення е-НДСА на НДСА дозволяє нам ефективно обробляти epsilon-переходи та враховувати їх в результуючому НДСА. Це допомагає уникнути неоднозначності, яка може виникнути через присутність epsilon-переходів.
 
 \vspace{1em}
-\textbf{Приклад:}
+\textbf{Приклад 1:}
 \vspace{0.5em}
 
 Розглянемо е-НДСА, який має наступні переходи:
@@ -154,6 +159,8 @@ Epsilon-переходи обробляються двома способами:
     \item \(1 \xrightarrow{y, \epsilon} 2\)
     \item \(2 \xrightarrow{z} 2\)
 \end{itemize}
+
+\includegraphics[width=0.5\textwidth]{e-nfa-automata_0.json.png}
 
 Після застосування алгоритму перетворення отримаємо НДСА з такими переходами:
 \begin{itemize}
@@ -164,12 +171,113 @@ Epsilon-переходи обробляються двома способами:
     \item \(2 \xrightarrow{z} 2\)
 \end{itemize}
 
+\includegraphics[width=0.5\textwidth]{nfa-automata_0.json.png}
+
 Тут, як можна побачити, переходи, які були пов'язані з epsilon-переходами в е-НДСА, були успішно оброблені та додані до результуючого НДСА.
+
+Here is the updated text for example 4:
+
+\vspace{1em}
+\textbf{Приклад 2:}
+\vspace{0.5em}
+
+Розглянемо результати обробки файлу \( automata\_1.json \). Оригінальний е-НДСА має наступну структуру:
+
+\begin{itemize}
+    \item \(1 \xrightarrow{e} \{2, 3\}\)
+    \item \(2 \xrightarrow{a} 2\)
+    \item \(2 \xrightarrow{b} 3\)
+    \item \(3 \xrightarrow{c} 4\)
+    \item \(3 \xrightarrow{e} 2\)
+    \item \(4 \xrightarrow{a} 4\)
+\end{itemize}
+
+\includegraphics[width=0.5\textwidth]{e-nfa-automata_1.json.png}
+
+Після застосування алгоритму перетворення отримаємо НДСА з такими переходами:
+\begin{itemize}
+    \item \(1 \xrightarrow{a} 2\)
+    \item \(1 \xrightarrow{b} \{2, 3\}\)
+    \item \(1 \xrightarrow{c} 4\)
+    \item \(2 \xrightarrow{a} 2\)
+    \item \(2 \xrightarrow{b} \{2, 3\}\)
+    \item \(3 \xrightarrow{c} 4\)
+    \item \(4 \xrightarrow{a} 4\)
+\end{itemize}
+
+\includegraphics[width=0.5\textwidth]{nfa-automata_1.json.png}
+
+В цьому прикладі цікаво спостерігати, як стан \(1\) стає кінцевим після перетворення, тому що він може досягти кінцевих станів \(3\) або \(4\) через epsilon-перехід.
+
+\vspace{1em}
+\textbf{Приклад 3:}
+\vspace{0.5em}
+
+Розглянемо результати обробки файлу \( automata\_2.json \). Оригінальний е-НДСА має наступну структуру:
+
+\begin{itemize}
+    \item \(1 \xrightarrow{b, e} 2\)
+    \item \(1 \xrightarrow{e} 3\)
+    \item \(2 \xrightarrow{b} 1\)
+    \item \(3 \xrightarrow{a} 4\)
+    \item \(3 \xrightarrow{b} 5\)
+    \item \(4 \xrightarrow{a} 3\)
+    \item \(5 \xrightarrow{a} 3\)
+\end{itemize}
+
+\includegraphics[width=0.5\textwidth]{e-nfa-automata_2.json.png}
+
+Після застосування алгоритму перетворення отримаємо НДСА з такими переходами:
+\begin{itemize}
+    \item \(1 \xrightarrow{a} 4\)
+    \item \(1 \xrightarrow{b} \{2, 5\}\)
+    \item \(2 \xrightarrow{b} \{1, 3\}\)
+    \item \(3 \xrightarrow{a} 4\)
+    \item \(3 \xrightarrow{b} 5\)
+    \item \(4 \xrightarrow{a} 3\)
+    \item \(5 \xrightarrow{a} 3\)
+\end{itemize}
+
+\includegraphics[width=0.5\textwidth]{nfa-automata_2.json.png}
+
+В цьому прикладі цікаво спостерігати, як стан \(1\) стає кінцевим після перетворення, тому що він може досягти кінцевого стану \(3\) через epsilon-перехід.
+
+\vspace{1em}
+\textbf{Приклад 4:}
+\vspace{0.5em}
+
+Розглянемо результати обробки файлу \( automata\_3.json \). Оригінальний е-НДСА має наступну структуру:
+
+\begin{itemize}
+    \item \(1 \xrightarrow{b} 2\)
+    \item \(1 \xrightarrow{c} 3\)
+    \item \(1 \xrightarrow{e} \{2, 3\}\)
+    \item \(2 \xrightarrow{a} 1\)
+    \item \(2 \xrightarrow{b} 3\)
+    \item \(2 \xrightarrow{c} \{1, 2\}\)
+\end{itemize}
+
+\includegraphics[width=0.5\textwidth]{e-nfa-automata_3.json.png}
+
+Після перетворення отримаємо НДСА з такими переходами:
+\begin{itemize}
+    \item \(1 \xrightarrow{a} \{1, 2, 3\}\)
+    \item \(1 \xrightarrow{b} \{2, 3\}\)
+    \item \(1 \xrightarrow{c} \{1, 2, 3\}\)
+    \item \(2 \xrightarrow{a} \{1, 2, 3\}\)
+    \item \(2 \xrightarrow{b} 3\)
+    \item \(2 \xrightarrow{c} \{1, 2, 3\}\)
+\end{itemize}
+
+\includegraphics[width=0.5\textwidth]{nfa-automata_3.json.png}
+
+В цьому прикладі цікаво спостерігати, як перетворення збільшило кількість кінцевих станів, тому що стан \(1\) може досягти кінцевого стану \(3\) через epsilon-перехід, і тому сам стає кінцевим.
 
 \vspace{1em}
 \textbf{Висновок:}
 \vspace{0.5em}
 
-Алгоритм надає нам засіб для перетворення е-НДСА на НДСА, враховуючи всі можливі стани, які можна досягти через epsilon-переходи. Результуючий НДСА є повністю визначеним і не містить epsilon-переходів, що спрощує його аналіз та використання.
+Алгоритм надає нам засіб для перетворення е-НДСА на НДСА, враховуючи всі можливі стани, які можна досягти через epsilon-переходи. Результуючий НДСА є повністю визначеним і не містить epsilon-переходів, що спрощує його аналіз та використання. З цієї роботи ми навчилися основам роботи з е-НДСА і НДСА та перетворення одного в інший.
+
 
 \end{document}
