@@ -23,9 +23,13 @@ def process_file(directory: str, filename: str):
 
     converter = ENFAToNFAConverter(automata)
 
-    converter.convert_to_nfa().visualize("results/nfa-{}.png".format(filename))
+    nfa = converter.convert_to_nfa()
 
-    print("NFA: {}".format(converter.convert_to_nfa().to_json()))
+    nfa.visualize("results/nfa-{}.png".format(filename))
+    print("NFA: {}".format(nfa.to_json()))
+
+    nfa.save_to_file(os.path.join("results", "nfa-{}".format(filename)))
+
     print("Finished processing file: {}".format(filename))
 
 

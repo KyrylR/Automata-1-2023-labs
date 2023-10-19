@@ -67,6 +67,7 @@ This command will execute the `example` file, which performs the following actio
 3. **Convert e-NFA to NFA and Visualize**: The script will then:
     - Convert the e-NFA to NFA using the `ENFAToNFAConverter` class.
     - Visualize the NFA and save the image to the `results` directory with the filename `nfa-[filename].png`.
+    - Save the NFA to a JSON file in the `results` directory with the filename `nfa-[filename].json`.
 
 4. **Output JSON Representations**: Finally, the script will print out the JSON representations of both the e-NFA and the converted NFA to the console.
 
