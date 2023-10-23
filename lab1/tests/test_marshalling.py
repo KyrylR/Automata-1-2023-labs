@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from core import Automata
+from lab1 import Automata
 
 
 class TestAutomataSerializationMethods(unittest.TestCase):

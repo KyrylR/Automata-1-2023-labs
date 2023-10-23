@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from automata.fa.nfa import NFA
 
+
 @dataclass
 class Automata:
     A: set  # Set of states
@@ -51,7 +52,7 @@ class Automata:
                 transitions[state] = {}
 
             if symbol == self.epsilon:
-                symbol = ''
+                symbol = ""
 
             transitions[state][symbol] = targets
 
@@ -65,7 +66,7 @@ class Automata:
 
         # Generate the graph and save it to a file
         graph = automaton.show_diagram()
-        graph.draw(filename, prog='dot', format='png')
+        graph.draw(filename, prog="dot", format="png")
 
     def to_json(self):
         """Serialize the Automata instance to a JSON string."""
@@ -103,7 +104,11 @@ class Automata:
                 row.append(", ".join(map(str, transition)) if transition else "-")
             if self.epsilon:
                 epsilon_transition = self.f.get((state, self.epsilon), "-")
-                row.append(", ".join(map(str, epsilon_transition)) if epsilon_transition else "-")
+                row.append(
+                    ", ".join(map(str, epsilon_transition))
+                    if epsilon_transition
+                    else "-"
+                )
             table.append(row)
 
         # Format table as string

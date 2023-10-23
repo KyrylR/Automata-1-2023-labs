@@ -1,6 +1,6 @@
 import unittest
 
-from core import Automata
+from lab1 import Automata
 
 
 class TestAutomataFileOperations(unittest.TestCase):
@@ -21,7 +21,7 @@ class TestAutomataFileOperations(unittest.TestCase):
             epsilon="epsilon",
         )
         # Test filename
-        self.filename = ".pytest_cache/temp_automata.json"
+        self.filename = "./.pytest_cache/temp_automata.json"
 
     def test_save_to_file(self):
         # Save the core to a file

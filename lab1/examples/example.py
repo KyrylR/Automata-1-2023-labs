@@ -1,8 +1,6 @@
 import os
 
-from core import Automata
-
-from core import ENFAToNFAConverter
+from lab1 import Automata, ENFAToNFAConverter
 
 
 def list_files(directory):
@@ -19,20 +17,22 @@ def process_file(directory: str, filename: str):
 
     print("e-NFA: {}".format(automata.to_json()))
 
-    automata.visualize('results/e-nfa-{}.png'.format(os.path.splitext(filename)[0]))
+    automata.visualize(
+        "lab1/results/e-nfa-{}.png".format(os.path.splitext(filename)[0])
+    )
 
     converter = ENFAToNFAConverter(automata)
 
     nfa = converter.convert_to_nfa()
 
-    nfa.visualize("results/nfa-{}.png".format(os.path.splitext(filename)[0]))
+    nfa.visualize("lab1/results/nfa-{}.png".format(os.path.splitext(filename)[0]))
     print("NFA: {}".format(nfa.to_json()))
 
-    nfa.save_to_file(os.path.join("results", "nfa-{}".format(filename)))
+    nfa.save_to_file(os.path.join("lab1/results", "nfa-{}".format(filename)))
 
     print("Finished processing file: {}".format(filename))
 
 
 def main():
-    # for file in list_files("data"):
-    process_file("data", "automata_4.json")
+    for file in list_files("lab1/data"):
+        process_file("lab1/data", file)

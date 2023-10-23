@@ -3,16 +3,19 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
-name = "core"
+name = "Automata"
 version = "0.1.0"
 description = "A brief description of my package."
 authors = ["Kyryl R <kyryl.ryabov@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+packages = [
+    { include = "lab1" },
+]
 
 [tool.poetry.scripts]
 black = "black:main"
-example = "examples.example:main"
+example = "lab1.examples.example:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"

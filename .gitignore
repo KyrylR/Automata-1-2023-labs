@@ -3,5 +3,5 @@ __pycache__/
 *.pyo
 *.egg-info/
 .idea/
-venv/
+lab1/venv/
 dist
