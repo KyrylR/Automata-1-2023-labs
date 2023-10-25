@@ -63,7 +63,7 @@ class Automaton:
         Convert the automaton to a regular expression using the state elimination algorithm.
         """
         # Step 1: Eliminate intermediate states
-        for state in self.states[:]:
+        for state in self.states.copy():
             if state != self.initial_state and state not in self.final_states:
                 self.eliminate_state(state)
 
