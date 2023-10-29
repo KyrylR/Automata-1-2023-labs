@@ -79,3 +79,33 @@ class BuchiAutomaton:
             initial_state=data["initial_state"],
             accepting_states=set(data["accepting_states"]),
         )
+
+    def compose(self, other: 'BuchiAutomaton') -> 'BuchiAutomaton':
+        # Create the set of states for the composed automaton
+        composed_states = {(s1, s2) for s1 in self.states for s2 in other.states}
+
+        # Create the alphabet for the composed automaton
+        composed_alphabet = self.alphabet.intersection(other.alphabet)
+
+        # Create the transitions for the composed automaton
+        composed_transitions = dict()
+        for (s1, s2) in composed_states:
+            composed_transitions[(s1, s2)] = dict()
+            for symbol in composed_alphabet:
+                next_states1 = self.transitions.get(s1, {}).get(symbol, set())
+                next_states2 = other.transitions.get(s2, {}).get(symbol, set())
+                composed_transitions[(s1, s2)][symbol] = {(n1, n2) for n1 in next_states1 for n2 in next_states2}
+
+        # Create the initial state for the composed automaton
+        composed_initial_state = (self.initial_state, other.initial_state)
+
+        # Create the set of accepting states for the composed automaton
+        composed_accepting_states = {(s1, s2) for s1 in self.accepting_states for s2 in other.accepting_states}
+
+        return BuchiAutomaton(
+            composed_states,
+            composed_alphabet,
+            composed_transitions,
+            composed_initial_state,
+            composed_accepting_states
+        )
