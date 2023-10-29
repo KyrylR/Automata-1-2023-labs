@@ -1,0 +1,11 @@
+// Büchi Automaton
+digraph {
+	q1 [shape=doublecircle]
+	q0
+	q0 -> q1 [label=a]
+	q0 -> q0 [label=b]
+	q1 -> q1 [label=a]
+	q1 -> q0 [label=b]
+	start [shape=plaintext]
+	start -> q0
+}

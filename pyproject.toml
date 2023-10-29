@@ -15,7 +15,8 @@ packages = [
 
 [tool.poetry.scripts]
 black = "black:main"
-example = "lab1.examples.example:main"
+lab1 = "lab1.examples.example:main"
+lab3 = "lab3.examples.lab3:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"
