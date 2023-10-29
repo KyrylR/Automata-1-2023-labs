@@ -25,7 +25,7 @@ class Automaton:
 
         # Remove the state and its transitions
         self.states.remove(state)
-        for (s, _) in list(self.transitions.keys()):
+        for s, _ in list(self.transitions.keys()):
             if s == state:
                 del self.transitions[(s, _)]
 
@@ -35,9 +35,11 @@ class Automaton:
         """
         re = set()
         for symbol in self.alphabet:
-            if (start, symbol) in self.transitions and end in self.transitions[(start, symbol)]:
+            if (start, symbol) in self.transitions and end in self.transitions[
+                (start, symbol)
+            ]:
                 re.add(symbol)
-        return '|'.join(re)
+        return "|".join(re)
 
     def add_transition(self, start, end, re):
         """
@@ -55,8 +57,8 @@ class Automaton:
         Combine three regular expressions with concatenation and Kleene star.
         """
         if re2:
-            re2 = f'({re2})*'
-        return f'{re1}{re2}{re3}'
+            re2 = f"({re2})*"
+        return f"{re1}{re2}{re3}"
 
     def to_regular_expression(self):
         """
@@ -73,19 +75,19 @@ class Automaton:
             if final_state == self.initial_state:
                 re = self.reach(self.initial_state, self.initial_state)
                 if re:
-                    re = f'({re})*'
+                    re = f"({re})*"
             else:
                 re = self.reach(self.initial_state, self.initial_state)
                 if re:
-                    re = f'({re})*'
+                    re = f"({re})*"
                 re2 = self.reach(self.initial_state, final_state)
                 if re2:
                     re += re2
                 re3 = self.reach(final_state, final_state)
                 if re3:
-                    re += f'({re3})*'
+                    re += f"({re3})*"
             if re:
                 res.append(re)
 
         # Step 4: Find the union of all regular expressions obtained
-        return '|'.join(res).replace('||', '|').replace('()', '')
+        return "|".join(res).replace("||", "|").replace("()", "")

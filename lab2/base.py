@@ -78,7 +78,14 @@ class MealyAutomata:
 
         # Create a Moore machine with the states, input alphabet, output alphabet, transitions, initial state,
         # and final states.
-        moore_machine = MooreAutomata(states, input_alphabet, output_alphabet, transitions, initial_state, final_states)
+        moore_machine = MooreAutomata(
+            states,
+            input_alphabet,
+            output_alphabet,
+            transitions,
+            initial_state,
+            final_states,
+        )
 
         # Return the Moore machine.
         return moore_machine

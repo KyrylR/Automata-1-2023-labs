@@ -1,8 +1,15 @@
 from typing import Set
 
 from lab2 import MealyAutomata
-from lab2.tests.test_data import STATES, INPUT_ALPHABET, TRANSITIONS, OUTPUT_ALPHABET, INITIAL_STATE, OUTPUT_FUNCTION, \
-    FINAL_SYMBOLS
+from lab2.tests.test_data import (
+    STATES,
+    INPUT_ALPHABET,
+    TRANSITIONS,
+    OUTPUT_ALPHABET,
+    INITIAL_STATE,
+    OUTPUT_FUNCTION,
+    FINAL_SYMBOLS,
+)
 
 
 def solve_linear_equations(equations):
@@ -28,7 +35,9 @@ def solve_linear_equations(equations):
             for term_state, term_symbols in terms.items():
                 # If the term's state is not the current state and has its own equation
                 if term_state != state and term_state in solved_equations:
-                    for next_term_state, next_term_symbols in solved_equations[term_state].items():
+                    for next_term_state, next_term_symbols in solved_equations[
+                        term_state
+                    ].items():
                         # Expand the term using its equation
                         if next_term_state not in new_terms:
                             new_terms[next_term_state] = []
@@ -36,8 +45,13 @@ def solve_linear_equations(equations):
                         for symbol in term_symbols:
                             for next_symbol in next_term_symbols:
                                 # Check if expansion leads to infinite repetition
-                                if symbol + next_symbol not in new_terms[next_term_state]:
-                                    new_terms[next_term_state].append(symbol + next_symbol)
+                                if (
+                                    symbol + next_symbol
+                                    not in new_terms[next_term_state]
+                                ):
+                                    new_terms[next_term_state].append(
+                                        symbol + next_symbol
+                                    )
                                     updated = True
 
             # Remove duplicates from the terms
@@ -51,7 +65,9 @@ def solve_linear_equations(equations):
     return solved_equations
 
 
-def solve_linear_equations_mealy(mealy_machine: MealyAutomata, final_symbols: Set[str]) -> None:
+def solve_linear_equations_mealy(
+    mealy_machine: MealyAutomata, final_symbols: Set[str]
+) -> None:
     print("Mealy machine:")
     print(f"States: {mealy_machine.states}")
     print(f"Input alphabet: {mealy_machine.input_alphabet}")
@@ -96,7 +112,9 @@ def solve_linear_equations_mealy(mealy_machine: MealyAutomata, final_symbols: Se
             if output_symbol not in final_symbols:
                 continue
 
-            print(f"Transition: {transition}, symbol: {symbol}, output symbol: {output_symbol}. State: {value[symbol][0]}")
+            print(
+                f"Transition: {transition}, symbol: {symbol}, output symbol: {output_symbol}. State: {value[symbol][0]}"
+            )
 
             state = value[symbol][0]
             equation = sm_equation.get(state, None)
@@ -116,7 +134,7 @@ def solve_linear_equations_mealy(mealy_machine: MealyAutomata, final_symbols: Se
     print(sm_equation)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # Create a Mealy machine from the test data
     mealy_machine = MealyAutomata(
         states=STATES,

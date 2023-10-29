@@ -20,6 +20,7 @@ example = "lab1.examples.example:main"
 [tool.poetry.dependencies]
 python = "^3.11"
 automata-lib = {extras = ["visual"], version = "^8.1.0"}
+graphviz = "^0.20.1"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^6.1.0"
