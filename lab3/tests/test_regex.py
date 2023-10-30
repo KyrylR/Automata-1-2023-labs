@@ -16,7 +16,9 @@ class GenerateRegexFromBuchiTest(unittest.TestCase):
         }
         initial_state = "q0"
         accepting_states = {"q3"}
-        automaton = BuchiAutomaton(states, alphabet, transitions, initial_state, accepting_states)
+        automaton = BuchiAutomaton(
+            states, alphabet, transitions, initial_state, accepting_states
+        )
 
         # Generate an approximate regular expression from the automaton
         approximate_regex = automaton.to_approximate_regex()

@@ -6,12 +6,12 @@ from graphviz import Digraph
 
 class BuchiAutomaton:
     def __init__(
-        self,
-        states: Set[str],
-        alphabet: Set[str],
-        transitions: Dict[str, Dict[str, Set[str]]],
-        initial_state: str,
-        accepting_states: Set[str],
+            self,
+            states: Set[str],
+            alphabet: Set[str],
+            transitions: Dict[str, Dict[str, Set[str]]],
+            initial_state: str,
+            accepting_states: Set[str],
     ):
         self.states = states
         self.alphabet = alphabet
@@ -102,7 +102,9 @@ class BuchiAutomaton:
         accepted by the Büchi automaton.
         """
         sccs = self._find_strongly_connected_components()
-        accepting_sccs = [scc for scc in sccs if any(state in self.accepting_states for state in scc)]
+        accepting_sccs = [
+            scc for scc in sccs if any(state in self.accepting_states for state in scc)
+        ]
         regexes = [self._scc_to_regex(scc) for scc in accepting_sccs]
         approximate_regex = "|".join(regexes)
         return approximate_regex
@@ -216,6 +218,34 @@ class Bipole:
         # Exit states are the accepting states of the automaton
         self.exit_states = self.accepting_states.copy()
 
+    def visualize(self, filename="bipole"):
+        dot = Digraph(comment="Bipole")
+
+        # Add states
+        for state in self.states:
+            state_str = str(state)
+            if state in self.accepting_states:
+                dot.node(state_str, shape="doublecircle")
+            else:
+                dot.node(state_str)
+
+        # Add transitions
+        for state, transitions in self.transitions.items():
+            for symbol, next_states in transitions.items():
+                for next_state in next_states:
+                    dot.edge(str(state), str(next_state), label=symbol)
+
+        # Add entry states
+        for entry_state in self.entry_states:
+            dot.node(str(entry_state), style="filled", fillcolor="green")
+
+        # Add exit states
+        for exit_state in self.exit_states:
+            dot.node(str(exit_state), style="filled", fillcolor="red")
+
+        # Render the graph to a file in PNG format
+        dot.render(filename, format="png")
+
     def __repr__(self):
         return (
             f"Bipole(\nAutomaton: {self.automaton},\n"
@@ -269,6 +299,34 @@ class StrongIteration:
             self.transitions[from_state][symbol] = set()
         self.transitions[from_state][symbol].add(to_state)
 
+    def visualize(self, filename="strong_iteration"):
+        dot = Digraph(comment="StrongIteration")
+
+        # Add states
+        for state in self.states:
+            state_str = str(state)
+            if state in self.accepting_states:
+                dot.node(state_str, shape="doublecircle")
+            else:
+                dot.node(state_str)
+
+        # Add transitions
+        for state, transitions in self.transitions.items():
+            for symbol, next_states in transitions.items():
+                for next_state in next_states:
+                    dot.edge(str(state), str(next_state), label=symbol)
+
+        # Add entry states with a green fill
+        for entry_state in self.entry_states:
+            dot.node(str(entry_state), style="filled", fillcolor="green")
+
+        # Add exit states with a blue fill
+        for exit_state in self.exit_states:
+            dot.node(str(exit_state), style="filled", fillcolor="blue")
+
+        # Render the graph to a file in PNG format
+        dot.render(filename, format="png")
+
     def __repr__(self):
         return f"StrongIteration(\nBipole: {self.bipole}\n)"
 
@@ -302,10 +360,12 @@ class Concatenation:
 
     def construct_concatenation(self):
         # Step 2: Create the new automaton A
-        self.states = self.bipole_b.states | self.strong_iteration_c.states
+        self.states = {(state_b, state_c) for state_b in self.bipole_b.states for state_c in
+                       self.strong_iteration_c.states}
         self.alphabet = self.bipole_b.alphabet & self.strong_iteration_c.alphabet
-        self.initial_state = self.bipole_b.initial_state
-        self.accepting_states = self.strong_iteration_c.accepting_states
+        self.initial_state = (self.bipole_b.initial_state, next(iter(self.strong_iteration_c.entry_states)))
+        self.accepting_states = {(state_b, state_c) for state_b in self.bipole_b.states for state_c in
+                                 self.strong_iteration_c.accepting_states}
 
         # Step 3: Define the transition function
         for state_b in self.bipole_b.states:
@@ -340,6 +400,3 @@ class Concatenation:
             self.initial_state,
             self.accepting_states,
         )
-
-    def __repr__(self):
-        return f"Concatenation(\nBipole B: {self.bipole_b}\nStrong Iteration C: {self.strong_iteration_c}\n)"

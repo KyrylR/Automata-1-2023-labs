@@ -2,6 +2,7 @@ import os
 import json
 
 from lab3 import BuchiAutomaton
+from lab3.base import Bipole, StrongIteration, Concatenation
 
 
 def list_files(directory):
@@ -52,10 +53,20 @@ def process_files(directory: str, filename1: str, filename2: str):
     print("Büchi Automaton 2: {}".format(automaton2.to_json()))
     automaton2.visualize("lab3/results/buchi-{}".format(os.path.splitext(filename2)[0]))
 
-    composed_automaton = automaton1.compose(automaton2)
-    print("Composed Büchi Automaton: {}".format(composed_automaton.to_json()))
-    composed_automaton.visualize(
-        "lab3/results/composed-buchi-{}-{}".format(
+
+    bipole1 = Bipole(automaton1)
+    bipole1.visualize("lab3/results/bipole-{}".format(os.path.splitext(filename1)[0]))
+
+    bipole2 = Bipole(automaton2)
+    bipole2.visualize("lab3/results/bipole-{}".format(os.path.splitext(filename2)[0]))
+
+    strong_iteration = StrongIteration(bipole2)
+    strong_iteration.visualize("lab3/results/strong-iteration-{}".format(os.path.splitext(filename2)[0]))
+
+    concatenation = Concatenation(bipole1, strong_iteration)
+    concatenated_automaton = concatenation.to_buchi_automaton()
+    concatenated_automaton.visualize(
+        "lab3/results/concatenated-buchi-{}-{}".format(
             os.path.splitext(filename1)[0], os.path.splitext(filename2)[0]
         )
     )
@@ -67,7 +78,3 @@ def main():
     files = list(list_files("lab3/data"))
     for i in range(len(files) - 1):
         process_files("lab3/data", files[i], files[i + 1])
-
-
-if __name__ == "__main__":
-    main()

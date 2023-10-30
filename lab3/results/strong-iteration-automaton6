@@ -1,4 +1,4 @@
-// Büchi Automaton
+// StrongIteration
 digraph {
 	q3
 	q0
@@ -11,6 +11,7 @@ digraph {
 	q0 -> q1 [label=a]
 	q0 -> q2 [label=b]
 	q1 -> q3 [label=a]
+	q1 -> q0 [label=a]
 	q1 -> q4 [label=b]
 	q2 -> q5 [label=a]
 	q2 -> q6 [label=b]
@@ -24,6 +25,7 @@ digraph {
 	q6 -> q6 [label=b]
 	q7 -> q0 [label=a]
 	q7 -> q7 [label=b]
-	start [shape=plaintext]
-	start -> q0
+	q0 [fillcolor=green style=filled]
+	q7 [fillcolor=blue style=filled]
+	q1 [fillcolor=blue style=filled]
 }

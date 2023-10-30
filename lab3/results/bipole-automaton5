@@ -1,4 +1,4 @@
-// Büchi Automaton
+// Bipole
 digraph {
 	q3
 	q0
@@ -18,6 +18,7 @@ digraph {
 	q4 -> q5 [label=b]
 	q5 -> q4 [label=a]
 	q5 -> q0 [label=b]
-	start [shape=plaintext]
-	start -> q0
+	q0 [fillcolor=green style=filled]
+	q1 [fillcolor=red style=filled]
+	q5 [fillcolor=red style=filled]
 }
