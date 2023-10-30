@@ -96,44 +96,110 @@ class BuchiAutomaton:
         # Step 4: Return the new automaton A'
         return concatenation.to_buchi_automaton()
 
-    def to_approximate_regex(self, max_length: int = 5) -> str:
-        regexes = []
-        for accepting_state in self.accepting_states:
-            path = self.find_path(self.initial_state, accepting_state, max_length)
-            if path:
-                regex = self.path_to_regex(path)
-                regexes.append(regex)
+    def to_approximate_regex(self) -> str:
+        """
+        Generate an approximate regular expression that represents the language
+        accepted by the Büchi automaton.
+        """
+        sccs = self._find_strongly_connected_components()
+        accepting_sccs = [scc for scc in sccs if any(state in self.accepting_states for state in scc)]
+        regexes = [self._scc_to_regex(scc) for scc in accepting_sccs]
         approximate_regex = "|".join(regexes)
         return approximate_regex
 
-    def find_path(self, start_state: str, end_state: str, max_length: int) -> List[str]:
-        visited = set()
-        queue = [(start_state, [])]
-        while queue:
-            state, path = queue.pop(0)
-            if state in visited:
-                continue
-            visited.add(state)
-            new_path = path + [state]
-            if state == end_state and len(new_path) <= max_length:
-                return new_path
-            if len(new_path) < max_length:
-                for symbol, next_states in self.transitions.get(state, {}).items():
-                    for next_state in next_states:
-                        if next_state not in visited:
-                            queue.append((next_state, new_path))
-        return []
+    def _find_strongly_connected_components(self) -> List[Set[str]]:
+        """
+        Find the strongly connected components (SCCs) of the automaton using Tarjan's algorithm.
+        """
+        index_counter = [0]
+        stack = []
+        lowlinks = {}
+        index = {}
+        result = []
 
-    def path_to_regex(self, path: List[str]) -> str:
+        def strongconnect(node):
+            index[node] = index_counter[0]
+            lowlinks[node] = index_counter[0]
+            index_counter[0] += 1
+            stack.append(node)
+
+            successors = set()
+            for symbol, next_states in self.transitions.get(node, {}).items():
+                successors.update(next_states)
+            for successor in successors:
+                if successor not in index:
+                    strongconnect(successor)
+                    lowlinks[node] = min(lowlinks[node], lowlinks[successor])
+                elif successor in stack:
+                    lowlinks[node] = min(lowlinks[node], index[successor])
+
+            if lowlinks[node] == index[node]:
+                connected_component = set()
+                while True:
+                    successor = stack.pop()
+                    connected_component.add(successor)
+                    if successor == node:
+                        break
+                component = tuple(connected_component)
+                result.append(component)
+
+        for node in self.states:
+            if node not in index:
+                strongconnect(node)
+
+        return result
+
+    def _scc_to_regex(self, scc: Set[str]) -> str:
+        """
+        Convert a strongly connected component (SCC) into a regular expression.
+        """
+        cycles = self._find_cycles_in_scc(scc)
+        cycle_regexes = [self._cycle_to_regex(cycle) for cycle in cycles]
+        scc_regex = "|".join(cycle_regexes)
+        return scc_regex
+
+    def _find_cycles_in_scc(self, scc: Set[str]) -> List[List[str]]:
+        """
+        Find cycles in the SCC using a depth-first search (DFS) algorithm.
+        """
+        cycles = []
+
+        def dfs(node, visited, stack):
+            visited.add(node)
+            stack.append(node)
+
+            for symbol, next_states in self.transitions.get(node, {}).items():
+                for next_state in next_states:
+                    if next_state in scc:
+                        if next_state not in visited:
+                            dfs(next_state, visited, stack)
+                        else:
+                            cycle_start_index = stack.index(next_state)
+                            cycle = stack[cycle_start_index:]
+                            cycles.append(cycle)
+
+            stack.pop()
+
+        visited = set()
+        for state in scc:
+            if state not in visited:
+                dfs(state, visited, [])
+
+        return cycles
+
+    def _cycle_to_regex(self, cycle: List[str]) -> str:
+        """
+        Convert a cycle into a regular expression.
+        """
         regex = ""
-        for i in range(len(path) - 1):
-            state = path[i]
-            next_state = path[i + 1]
-            for symbol, transitions in self.transitions.get(state, {}).items():
-                if next_state in transitions:
+        for i in range(len(cycle)):
+            state = cycle[i]
+            next_state = cycle[(i + 1) % len(cycle)]
+            for symbol, next_states in self.transitions.get(state, {}).items():
+                if next_state in next_states:
                     regex += symbol
-                    break
-        return regex
+        cycle_regex = f"({regex})*"
+        return cycle_regex
 
 
 class Bipole:
