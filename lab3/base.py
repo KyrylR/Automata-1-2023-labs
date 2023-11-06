@@ -6,12 +6,12 @@ from graphviz import Digraph
 
 class BuchiAutomaton:
     def __init__(
-            self,
-            states: Set[str],
-            alphabet: Set[str],
-            transitions: Dict[str, Dict[str, Set[str]]],
-            initial_state: str,
-            accepting_states: Set[str],
+        self,
+        states: Set[str],
+        alphabet: Set[str],
+        transitions: Dict[str, Dict[str, Set[str]]],
+        initial_state: str,
+        accepting_states: Set[str],
     ):
         self.states = states
         self.alphabet = alphabet
@@ -360,12 +360,21 @@ class Concatenation:
 
     def construct_concatenation(self):
         # Step 2: Create the new automaton A
-        self.states = {(state_b, state_c) for state_b in self.bipole_b.states for state_c in
-                       self.strong_iteration_c.states}
+        self.states = {
+            (state_b, state_c)
+            for state_b in self.bipole_b.states
+            for state_c in self.strong_iteration_c.states
+        }
         self.alphabet = self.bipole_b.alphabet & self.strong_iteration_c.alphabet
-        self.initial_state = (self.bipole_b.initial_state, next(iter(self.strong_iteration_c.entry_states)))
-        self.accepting_states = {(state_b, state_c) for state_b in self.bipole_b.states for state_c in
-                                 self.strong_iteration_c.accepting_states}
+        self.initial_state = (
+            self.bipole_b.initial_state,
+            next(iter(self.strong_iteration_c.entry_states)),
+        )
+        self.accepting_states = {
+            (state_b, state_c)
+            for state_b in self.bipole_b.states
+            for state_c in self.strong_iteration_c.accepting_states
+        }
 
         # Step 3: Define the transition function
         for state_b in self.bipole_b.states:

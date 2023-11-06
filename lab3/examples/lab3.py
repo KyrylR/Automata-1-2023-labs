@@ -53,7 +53,6 @@ def process_files(directory: str, filename1: str, filename2: str):
     print("Büchi Automaton 2: {}".format(automaton2.to_json()))
     automaton2.visualize("lab3/results/buchi-{}".format(os.path.splitext(filename2)[0]))
 
-
     bipole1 = Bipole(automaton1)
     bipole1.visualize("lab3/results/bipole-{}".format(os.path.splitext(filename1)[0]))
 
@@ -61,7 +60,9 @@ def process_files(directory: str, filename1: str, filename2: str):
     bipole2.visualize("lab3/results/bipole-{}".format(os.path.splitext(filename2)[0]))
 
     strong_iteration = StrongIteration(bipole2)
-    strong_iteration.visualize("lab3/results/strong-iteration-{}".format(os.path.splitext(filename2)[0]))
+    strong_iteration.visualize(
+        "lab3/results/strong-iteration-{}".format(os.path.splitext(filename2)[0])
+    )
 
     concatenation = Concatenation(bipole1, strong_iteration)
     concatenated_automaton = concatenation.to_buchi_automaton()

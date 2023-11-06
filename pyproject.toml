@@ -11,12 +11,19 @@ license = "MIT"
 readme = "README.md"
 packages = [
     { include = "lab1" },
+    { include = "lab2" },
+    { include = "lab3" },
+    { include = "lab4" },
 ]
 
 [tool.poetry.scripts]
 black = "black:main"
 lab1 = "lab1.examples.example:main"
 lab3 = "lab3.examples.lab3:main"
+vis_kripke_model = "lab4.examples.vis_kripke_model:main"
+visualize_ltl_automaton = "lab4.examples.visualize_ltl_automaton:main"
+visualize_product_automaton = "lab4.examples.visualize_product_automaton:main"
+check_with_bfs = "lab4.examples.check_with_bfs:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"
