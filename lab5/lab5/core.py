@@ -77,42 +77,68 @@ def time_successors(clock_region):
     return successors
 
 
-def satisfies_constraint(clock_region, constraint):
+def satisfies_constraint(clock_region, transition_constraint):
     """
-    Method to check if a given clock region satisfies a specific clock constraint.
+    Adjusted method to check if a given clock region satisfies a specific clock constraint.
+    Handles different types of constraints.
     """
     for clock, region_constraint in clock_region.constraints.items():
-        if clock in constraint:
-            constraint_value = constraint[clock]
+        if clock in transition_constraint:
             if region_constraint.startswith('='):
-                if int(region_constraint[1:]) != constraint_value:
-                    return False
+                region_value = int(region_constraint[1:])
+                if isinstance(transition_constraint[clock], int):
+                    if region_value != transition_constraint[clock]:
+                        return False
+                elif isinstance(transition_constraint[clock], str):
+                    # If constraint is a string, parse and compare values
+                    transition_value = int(transition_constraint[clock][1:])
+                    if transition_constraint[clock].startswith('<') and region_value >= transition_value:
+                        return False
+                    elif transition_constraint[clock].startswith('>') and region_value <= transition_value:
+                        return False
             elif region_constraint.startswith('>'):
-                if int(region_constraint[1:]) <= constraint_value:
-                    return False
+                region_value = int(region_constraint[1:])
+                if isinstance(transition_constraint[clock], int):
+                    if region_value <= transition_constraint[clock]:
+                        return False
+                elif isinstance(transition_constraint[clock], str):
+                    transition_value = int(transition_constraint[clock][1:])
+                    if transition_constraint[clock].startswith('<') and region_value >= transition_value:
+                        return False
+                    elif transition_constraint[clock].startswith('=') and region_value != transition_value:
+                        return False
             elif region_constraint.startswith('<'):
-                if int(region_constraint[1:]) >= constraint_value:
-                    return False
+                region_value = int(region_constraint[1:])
+                if isinstance(transition_constraint[clock], int):
+                    if region_value >= transition_constraint[clock]:
+                        return False
+                elif isinstance(transition_constraint[clock], str):
+                    transition_value = int(transition_constraint[clock][1:])
+                    if transition_constraint[clock].startswith('>') and region_value <= transition_value:
+                        return False
+                    elif transition_constraint[clock].startswith('=') and region_value != transition_value:
+                        return False
     return True
 
 
 def transition_mapping(original_transitions, states):
     """
-    Function to create a transition mapping for the region automaton.
+    Function to create a transition mapping for the region automaton, adjusted to work with state IDs.
     """
     region_automaton_transitions = []
 
-    for from_state, to_state, action, constraint in original_transitions:
-        ra_from_state = next((s for s in states if s.state_id == from_state.state_id), None)
+    for from_state_id, to_state_id, action, constraint in original_transitions:
+        ra_from_states = [s for s in states if s.state_id == from_state_id]
 
-        successors = time_successors(ra_from_state.clock_region)
+        for ra_from_state in ra_from_states:
+            successors = time_successors(ra_from_state.clock_region)
 
-        for successor in successors:
-            if satisfies_constraint(successor, constraint):
-                ra_to_state = next((s for s in states if s.state_id == to_state.state_id), None)
-                if ra_to_state:
-                    region_transition = (ra_from_state, ra_to_state, action, successor)
-                    region_automaton_transitions.append(region_transition)
+            for successor in successors:
+                if satisfies_constraint(successor, constraint):
+                    ra_to_states = [s for s in states if s.state_id == to_state_id]
+
+                    for ra_to_state in ra_to_states:
+                        region_transition = (ra_from_state, ra_to_state, action, successor)
+                        region_automaton_transitions.append(region_transition)
 
     return region_automaton_transitions
-

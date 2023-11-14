@@ -37,37 +37,44 @@ def format_clock_region(clock_region):
     return ", ".join(f"{k} {v}" for k, v in clock_region.constraints.items())
 
 
-# Define clock regions for each state based on the provided constraints
-clock_region_0 = ClockRegion({'x': '=1', 'y': '<1'})
-clock_region_1 = ClockRegion({'x': '<1', 'y': '=1'})
-clock_region_2 = ClockRegion({'x': '=1', 'y': '=1'})
+# Based on the given timed automaton, we first define the clock regions for each state and action
+clock_regions = {
+    '0_a': ClockRegion({'x': '=1'}),
+    '0_b': ClockRegion({'y': '<1'}),
+    '1_a': ClockRegion({'x': '<1'}),
+    '1_b': ClockRegion({'y': '=1'}),
+    '2_a': ClockRegion({'x': '=1'}),
+    '2_b': ClockRegion({'y': '=1'}),
+}
 
-# Define states and associate them with the corresponding clock regions
-state_0 = State(0, clock_region_0)
-state_1 = State(1, clock_region_1)
-state_2 = State(2, clock_region_2)
-
-# Defining the states and initial states
-states = [state_0, state_1, state_2]
-initial_states = [state_0]
-
-# Define the original transitions based on the automaton description
-original_transitions = [
-    (state_0, state_0, 'a', {'x': 1}),  # From state 0, on reading 'a', stay in state 0 with x = 1
-    (state_0, state_1, 'b', {'y': 0}),  # From state 0, on reading 'b', move to state 1 with y < 1
-    (state_1, state_0, 'a', {'x': 0}),  # From state 1, on reading 'a', move to state 0 with x < 1
-    (state_1, state_2, 'b', {'y': 1}),  # From state 1, on reading 'b', move to state 2 with y = 1
-    (state_2, state_0, 'a', {'x': 1}),  # From state 2, on reading 'a', move to state 0 with x = 1
-    (state_2, state_2, 'b', {'y': 1}),  # From state 2, on reading 'b', stay in state 2 with y = 1
+# Define the states with their respective clock regions
+states = [
+    State('0', clock_regions['0_a']),
+    State('0', clock_regions['0_b']),
+    State('1', clock_regions['1_a']),
+    State('1', clock_regions['1_b']),
+    State('2', clock_regions['2_a']),
+    State('2', clock_regions['2_b']),
 ]
 
-# Constructing the region automaton transitions
-region_transitions = transition_mapping(original_transitions, states)
+# Define the transitions based on the timed automaton
+transitions = [
+    ('0', '0', 'a', {'x': 1}),  # From state 0 on reading 'a', x=1
+    ('0', '1', 'b', {'y': '<1'}),  # From state 0 on reading 'b', y<1
+    ('1', '0', 'a', {'x': '<1'}),  # From state 1 on reading 'a', x<1
+    ('1', '2', 'b', {'y': 1}),  # From state 1 on reading 'b', y=1
+    ('2', '0', 'a', {'x': 1}),  # From state 2 on reading 'a', x=1
+    ('2', '2', 'b', {'y': 1}),  # From state 2 on reading 'b', y=1
+]
 
-# Constructing the Region Automaton with defined states, initial states, and transitions
-region_automaton = RegionAutomaton(states, initial_states, region_transitions)
+# Map the original transitions to the region automaton transitions
+region_automaton_transitions = transition_mapping(transitions, states)
+
+# Create the Region Automaton
+region_automaton = RegionAutomaton(states, ['0'], region_automaton_transitions)
 
 
 def main():
-    dot_original = visualize_region_automaton(region_automaton, "Region Automaton")
-    dot_original.render('./lab5/results/region_automaton', format='png', cleanup=True)
+    print(region_automaton)
+    # dot_original = visualize_region_automaton(region_automaton, "Region Automaton")
+    # dot_original.render('./lab5/results/region_automaton', format='png', cleanup=True)
