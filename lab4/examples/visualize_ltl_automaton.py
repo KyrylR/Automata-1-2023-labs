@@ -1,66 +1,26 @@
 import graphviz
 
+# Create a Digraph object
+dot = graphviz.Digraph(comment='Büchi Automaton for LTL Formula')
 
-# Function to visualize the LTL automaton
-def visualize_ltl_automaton(ltl_states, ltl_transitions, ltl_accepting_states):
-    dot = graphviz.Digraph(comment="LTL Automaton")
+# Adding nodes (states)
+dot.node('S0', 'S0\n(Initial)', shape='circle')
+dot.node('S1', 'S1\n(p is false at least once)', shape='doublecircle')
+dot.node('S2', 'S2\n(q is true at least once)', shape='circle')
 
-    # Add nodes to the graph
-    for state in ltl_states:
-        shape = "doublecircle" if state in ltl_accepting_states else "circle"
-        dot.node(str(state), f"{state}", shape=shape)
+# Adding edges (transitions)
+# Transitions from S0
+dot.edge('S0', 'S1', label='¬p ∧ ¬q / ¬p ∧ q')
+dot.edge('S0', 'S2', label='p ∧ q')
+dot.edge('S0', 'S0', label='p ∧ ¬q')
 
-    # Add edges to the graph
-    for state, transitions in ltl_transitions.items():
-        for inputs, next_state in transitions.items():
-            label = ",".join(inputs) if inputs else "∅"
-            dot.edge(str(state), str(next_state), label=label)
+# Transitions from S1
+dot.edge('S1', 'S1', label='p ∧ q / p ∧ ¬q / ¬p ∧ q / ¬p ∧ ¬q')
 
-    return dot
-
-
-ltl_states = {
-    ("box_p", "diamond_q"),
-    ("box_p", "not_diamond_q"),
-    ("not_box_p", "diamond_q"),
-    ("not_box_p", "not_diamond_q"),
-}
-ltl_transitions = {
-    ("box_p", "not_diamond_q"): {
-        ("p", "q"): ("box_p", "diamond_q"),
-        ("p",): ("box_p", "not_diamond_q"),
-        ("q",): ("box_p", "diamond_q"),
-        (): ("not_box_p", "not_diamond_q"),
-    },
-    ("box_p", "diamond_q"): {
-        ("p", "q"): ("box_p", "diamond_q"),
-        ("p",): ("box_p", "diamond_q"),
-        ("q",): ("box_p", "diamond_q"),
-        (): ("not_box_p", "diamond_q"),
-    },
-    ("not_box_p", "diamond_q"): {
-        ("p", "q"): ("not_box_p", "diamond_q"),
-        ("p",): ("not_box_p", "diamond_q"),
-        ("q",): ("not_box_p", "diamond_q"),
-        (): ("not_box_p", "diamond_q"),
-    },
-    ("not_box_p", "not_diamond_q"): {
-        ("p", "q"): ("not_box_p", "diamond_q"),
-        ("p",): ("not_box_p", "not_diamond_q"),
-        ("q",): ("not_box_p", "diamond_q"),
-        (): ("not_box_p", "not_diamond_q"),
-    },
-}
-ltl_accepting_states = {
-    ("box_p", "diamond_q"),
-    ("box_p", "not_diamond_q"),
-    ("not_box_p", "diamond_q"),
-}
+# Transitions from S2
+dot.edge('S2', 'S2', label='p ∧ q / p ∧ ¬q / ¬p ∧ q / ¬p ∧ ¬q')
 
 
 def main():
-    # Visualize the LTL automaton
-    ltl_graph = visualize_ltl_automaton(
-        ltl_states, ltl_transitions, ltl_accepting_states
-    )
-    ltl_graph.render("./lab4/results/ltl_automaton", format="png", cleanup=True)
+    dot.render('./lab4/results/Buchi_Automaton_LTL_Formula', format='png', cleanup=True)
+

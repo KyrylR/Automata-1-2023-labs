@@ -24,6 +24,9 @@ vis_kripke_model = "lab4.examples.vis_kripke_model:main"
 visualize_ltl_automaton = "lab4.examples.visualize_ltl_automaton:main"
 visualize_product_automaton = "lab4.examples.visualize_product_automaton:main"
 check_with_bfs = "lab4.examples.check_with_bfs:main"
+ltl_unab = "lab4.examples.ltl_unab:main"
+viz_or_lab5 = "lab5.examples.visualize_original:main"
+viz_lab5 = "lab5.examples.visualize_automaton:main"
 
 [tool.poetry.dependencies]
 python = "^3.11"
