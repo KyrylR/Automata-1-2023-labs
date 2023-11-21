@@ -3,7 +3,7 @@ class RegionAutomaton:
     Represents a region automaton, constructed from a timed automaton.
     """
 
-    def __init__(self, states, initial_states, transitions):
+    def __init__(self, states, initial_states, final_states, transitions):
         """
         Initializes a RegionAutomaton.
         :param states: A list of State instances.
@@ -12,6 +12,7 @@ class RegionAutomaton:
         """
         self.states = states
         self.initial_states = initial_states
+        self.final_states = final_states
         self.transitions = transitions
 
     def __repr__(self):
@@ -59,20 +60,20 @@ def time_successors(clock_region):
     successors = []
 
     for clock, constraint in clock_region.constraints.items():
-        if constraint.startswith('='):
+        if constraint.startswith("="):
             # For an exact value, the time-successor can either exceed this value or stay the same
             value = int(constraint[1:])
-            successors.append(ClockRegion({clock: f'>{value}'}))  # Exceeding value
-            successors.append(ClockRegion({clock: f'={value}'}))  # Staying the same
-        elif constraint.startswith('<'):
+            successors.append(ClockRegion({clock: f">{value}"}))  # Exceeding value
+            successors.append(ClockRegion({clock: f"={value}"}))  # Staying the same
+        elif constraint.startswith("<"):
             # For a less than constraint, consider reaching the value and exceeding it
             value = int(constraint[1:])
-            successors.append(ClockRegion({clock: f'={value}'}))  # Reaching value
-            successors.append(ClockRegion({clock: f'>{value}'}))  # Exceeding value
-        elif constraint.startswith('>'):
+            successors.append(ClockRegion({clock: f"={value}"}))  # Reaching value
+            successors.append(ClockRegion({clock: f">{value}"}))  # Exceeding value
+        elif constraint.startswith(">"):
             # For a greater than constraint, consider only exceeding the value
             value = int(constraint[1:])
-            successors.append(ClockRegion({clock: f'>{value}'}))  # Exceeding value
+            successors.append(ClockRegion({clock: f">{value}"}))  # Exceeding value
 
     return successors
 
@@ -84,7 +85,7 @@ def satisfies_constraint(clock_region, transition_constraint):
     """
     for clock, region_constraint in clock_region.constraints.items():
         if clock in transition_constraint:
-            if region_constraint.startswith('='):
+            if region_constraint.startswith("="):
                 region_value = int(region_constraint[1:])
                 if isinstance(transition_constraint[clock], int):
                     if region_value != transition_constraint[clock]:
@@ -92,31 +93,49 @@ def satisfies_constraint(clock_region, transition_constraint):
                 elif isinstance(transition_constraint[clock], str):
                     # If constraint is a string, parse and compare values
                     transition_value = int(transition_constraint[clock][1:])
-                    if transition_constraint[clock].startswith('<') and region_value >= transition_value:
+                    if (
+                        transition_constraint[clock].startswith("<")
+                        and region_value >= transition_value
+                    ):
                         return False
-                    elif transition_constraint[clock].startswith('>') and region_value <= transition_value:
+                    elif (
+                        transition_constraint[clock].startswith(">")
+                        and region_value <= transition_value
+                    ):
                         return False
-            elif region_constraint.startswith('>'):
+            elif region_constraint.startswith(">"):
                 region_value = int(region_constraint[1:])
                 if isinstance(transition_constraint[clock], int):
                     if region_value <= transition_constraint[clock]:
                         return False
                 elif isinstance(transition_constraint[clock], str):
                     transition_value = int(transition_constraint[clock][1:])
-                    if transition_constraint[clock].startswith('<') and region_value >= transition_value:
+                    if (
+                        transition_constraint[clock].startswith("<")
+                        and region_value >= transition_value
+                    ):
                         return False
-                    elif transition_constraint[clock].startswith('=') and region_value != transition_value:
+                    elif (
+                        transition_constraint[clock].startswith("=")
+                        and region_value != transition_value
+                    ):
                         return False
-            elif region_constraint.startswith('<'):
+            elif region_constraint.startswith("<"):
                 region_value = int(region_constraint[1:])
                 if isinstance(transition_constraint[clock], int):
                     if region_value >= transition_constraint[clock]:
                         return False
                 elif isinstance(transition_constraint[clock], str):
                     transition_value = int(transition_constraint[clock][1:])
-                    if transition_constraint[clock].startswith('>') and region_value <= transition_value:
+                    if (
+                        transition_constraint[clock].startswith(">")
+                        and region_value <= transition_value
+                    ):
                         return False
-                    elif transition_constraint[clock].startswith('=') and region_value != transition_value:
+                    elif (
+                        transition_constraint[clock].startswith("=")
+                        and region_value != transition_value
+                    ):
                         return False
     return True
 
@@ -138,7 +157,12 @@ def transition_mapping(original_transitions, states):
                     ra_to_states = [s for s in states if s.state_id == to_state_id]
 
                     for ra_to_state in ra_to_states:
-                        region_transition = (ra_from_state, ra_to_state, action, successor)
+                        region_transition = (
+                            ra_from_state,
+                            ra_to_state,
+                            action,
+                            successor,
+                        )
                         region_automaton_transitions.append(region_transition)
 
     return region_automaton_transitions

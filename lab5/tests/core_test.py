@@ -1,6 +1,7 @@
 import unittest
 
-from lab5.lab5.core import satisfies_constraint, ClockRegion, State, RegionAutomaton, transition_mapping, time_successors
+from lab5.lab5.core import satisfies_constraint, ClockRegion, State, RegionAutomaton, transition_mapping, \
+    time_successors
 
 
 class RegionAutomatonTest(unittest.TestCase):
@@ -16,14 +17,18 @@ class RegionAutomatonTest(unittest.TestCase):
 
         self.states = [self.state_0, self.state_1, self.state_2]
         self.initial_states = [self.state_0]
+        self.final_states = [self.state_1]
 
         self.original_transitions = [
-            (self.state_0, self.state_1, 'a', {'x': 1}),
-            (self.state_1, self.state_2, 'b', {'y': 2}),
+            ( self.state_0,  self.state_0, 'a', {'x=': 1}),  # From state 0, on reading 'a', stay in state 0 with x = 1
+            ( self.state_0,  self.state_1, 'b', {'y<': 1}),  # From state 0, on reading 'b', move to state 1 with y < 1
+            ( self.state_1,  self.state_0, 'a', {'x<': 1}),  # From state 1, on reading 'a', move to state 0 with x < 1
+            ( self.state_1,  self.state_2, 'b', {'y=': 1}),  # From state 1, on reading 'b', move to state 2 with y = 1
+            ( self.state_2,  self.state_0, 'a', {'x=': 1}),  # From state 2, on reading 'a', move to state 0 with x = 1
+            ( self.state_2,  self.state_2, 'b', {'y=': 1}),  # From state 2, on reading 'b', stay in state 2 with y = 1
         ]
-
         region_transitions = transition_mapping(self.original_transitions, self.states)
-        self.region_automaton = RegionAutomaton(self.states, self.initial_states, region_transitions)
+        self.region_automaton = RegionAutomaton(self.states, self.initial_states, self.final_states, region_transitions)
 
     def test_initial_states(self):
         # Test if the initial states of the region automaton match the expected initial states
